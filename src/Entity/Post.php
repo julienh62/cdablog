@@ -22,17 +22,16 @@ class Post
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $content = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $author = null;
+
 
     #[ORM\Column]
     private ?bool $isArchived = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+    private ?\DateTime $created_at = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $update_at = null;
+    private ?\DateTime $update_at = null;
 
     #[ORM\Column(length: 255)]
     private ?string $image = null;
@@ -85,17 +84,8 @@ class Post
         return $this;
     }
 
-    public function getAuthor(): ?string
-    {
-        return $this->author;
-    }
-
-    public function setAuthor(string $author): static
-    {
-        $this->author = $author;
-
-        return $this;
-    }
+    
+  
 
     public function isIsArchived(): ?bool
     {
@@ -109,24 +99,24 @@ class Post
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->created_at;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    public function setCreatedAt(\DateTime $created_at): static
     {
         $this->created_at = $created_at;
 
         return $this;
     }
 
-    public function getUpdateAt(): ?\DateTimeImmutable
+    public function getUpdateAt(): ?\DateTime
     {
         return $this->update_at;
     }
 
-    public function setUpdateAt(\DateTimeImmutable $update_at): static
+    public function setUpdateAt(\DateTime $update_at): static
     {
         $this->update_at = $update_at;
 

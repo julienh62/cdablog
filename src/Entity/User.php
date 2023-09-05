@@ -43,6 +43,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->userPost = new ArrayCollection();
     }
 
+
+    public function __toString()
+    {
+        return $this->getName(); // Utilisez le champ approprié pour représenter l'utilisateur en tant que chaîne
+    }
+
     public function getId(): ?int
     {
         return $this->id;
