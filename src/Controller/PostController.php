@@ -4,14 +4,16 @@ namespace App\Controller;
 
 use App\Entity\Post;
 use App\Entity\User;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Form\PostType;
 use App\Repository\PostRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+
 
 
 
@@ -64,16 +66,18 @@ class PostController extends AbstractController
 
      }
 
-    #[Route('/posts', name: 'post_index')]
-    public function index(): Response
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-        $posts = $entityManager->getRepository(Post::class)->findAll();
-        
-        return $this->render('post/listpost.html.twig', [
-            'posts' => $posts,
-        ]);
-    }
+     #[Route('/posts', name: 'post_index')]
+     public function index(EntityManagerInterface $entityManager): Response
+     {
+      //  $created_at = $post->getCreatedAt();
+         $posts = $entityManager->getRepository(Post::class)->findAll();
+         
+
+         return $this->render('post/listpost.html.twig', [
+             'posts' => $posts,
+         ]);
+     }
+     
 
 
     #[Route('/post/{id}', name: 'post_show')]
@@ -82,11 +86,13 @@ class PostController extends AbstractController
         // Utilisez la variable $post pour accéder aux propriétés de votre entité Post
         $title = $post->getTitle();
         $content = $post->getContent();
+        $created_at = $post->getCreatedAt();
 
         // Vous pouvez renvoyer le contenu sous forme de réponse HTTP
         return $this->render('post/showpost.html.twig', [
             'title' => $title,
             'content' => $content,
+            'created_at' => $created_at
         ]);
     }
 

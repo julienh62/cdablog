@@ -2,14 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Tag;
 use App\Form\TagType;
 use App\Repository\TagRepository;
-use App\Entity\Tag;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TagController extends AbstractController
 {
@@ -24,6 +25,7 @@ class TagController extends AbstractController
         ]);
     }
 
+    #[IsGranted("ROLE_USER")]
     #[Route('/createtag', name: 'create_tag')]
     public function createTag(Request $request, EntityManagerInterface $em): Response
     {

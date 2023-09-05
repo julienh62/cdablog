@@ -9,7 +9,9 @@
         <h1 class="blue-heading">{{ title }}</h1>
         <div class="row">
             <div class="col-md-12">
+                <p>{{ title }}</p>
                 <p>{{ content }}</p>
+                <p>{{ created_at|date('Y-m-d H:i:s') }}</p>
             </div>
         </div>
     </div>
