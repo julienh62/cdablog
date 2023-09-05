@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TagController!{% endblock %}
+
+{% block body %}
+  <div class="container">
+       {% for tag in tags %}
+       <h2> {{ tag.name }}
+       {% endfor %}
+       <p>email: {{ email }} </p>
+    </div>
+
+{% endblock %}
+
+
