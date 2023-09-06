@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Entity\Tag;
 use App\Entity\User;
 use App\Form\PostType;
 use App\Repository\PostRepository;
@@ -12,6 +13,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 
 
@@ -21,7 +25,7 @@ class PostController extends AbstractController
 {
         #[IsGranted("ROLE_USER")]
         #[Route('/createpost', name: 'createpost')]
-        public function create( Request $request, EntityManagerInterface $em): Response
+        public function create( Request $request, EntityManagerInterface $em,  SluggerInterface $slugger): Response
         {
            $post = new Post();
    
@@ -51,12 +55,41 @@ class PostController extends AbstractController
                 $post->setUpdateAt(new \DateTime());
                 
 
+                 /** @var UploadedFile $imageFile */
+                  $imageFile = $form->get('image')->getData();
+
+                   // this condition is needed because the 'image' field is not required
+                   // so the PDF file must be processed only when a file is uploaded
+                   if ($imageFile) {
+                      $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                  // this is needed to safely include the file name as part of the URL
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+                // Move the file to the directory where images are stored
+                try {
+                    $imageFile->move(
+                        $this->getParameter('images_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // ... handle exception if something happens during file upload
+                }
+
+                // updates the 'imageFilename' property to store the PDF file name
+                // instead of its contents
+                $post->setImage($newFilename);
+            }
+
+
+
+
              // Enregistrez les modifications dans la base de données
                 $em->persist($post);
                 $em->flush();
 
                  // Redirigez vers la page de détails ou une autre page
-              return $this->redirectToRoute('app_home');
+              return $this->redirectToRoute('post_index');
               }
 
     
@@ -67,14 +100,13 @@ class PostController extends AbstractController
      }
 
      #[Route('/posts', name: 'post_index')]
-     public function index(EntityManagerInterface $entityManager): Response
+     public function index(PostRepository $postRepo): Response
      {
-      //  $created_at = $post->getCreatedAt();
-         $posts = $entityManager->getRepository(Post::class)->findAll();
-         
-
+         $posts = $postRepo->findAll();
+       
+ 
          return $this->render('post/listpost.html.twig', [
-             'posts' => $posts,
+             'posts' => $posts
          ]);
      }
      
@@ -83,19 +115,75 @@ class PostController extends AbstractController
     #[Route('/post/{id}', name: 'post_show')]
     public function show(Post $post): Response
     {
-        // Utilisez la variable $post pour accéder aux propriétés de votre entité Post
-        $title = $post->getTitle();
-        $content = $post->getContent();
-        $created_at = $post->getCreatedAt();
-
-        // Vous pouvez renvoyer le contenu sous forme de réponse HTTP
+       
         return $this->render('post/showpost.html.twig', [
-            'title' => $title,
-            'content' => $content,
-            'created_at' => $created_at
+           'post'=> $post
+            
         ]);
     }
 
+    #[Security("is_granted('ROLE_USER') and post.getAuthor() == user")]
+    #[Route('/editpost/{id}', name: 'editpost')]
+    public function update(Request $request, EntityManagerInterface $em, SluggerInterface $slugger, Post $post): Response
+    {
+        // Check if the user has permission to edit this post
+    
+        // Create and handle the form with the existing post data
+        $form = $this->createForm(PostType::class, $post);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Update the 'updatedAt' property
+            $post->setUpdateAt(new \DateTime());
+
+            /** @var UploadedFile $imageFile */
+            $imageFile = $form->get('image')->getData();
+
+            // this condition is needed because the 'image' field is not required
+            // so the PDF file must be processed only when a file is uploaded
+            if ($imageFile) {
+               $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+           // this is needed to safely include the file name as part of the URL
+             $safeFilename = $slugger->slug($originalFilename);
+             $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+         // Move the file to the directory where images are stored
+         try {
+             $imageFile->move(
+                 $this->getParameter('images_directory'),
+                 $newFilename
+             );
+         } catch (FileException $e) {
+             // ... handle exception if something happens during file upload
+         }
+
+         // updates the 'imageFilename' property to store the PDF file name
+         // instead of its contents
+         $post->setImage($newFilename);
+     }
+    
+            // Persist and flush the changes
+            //$em->persist($post);
+            $em->flush();
+    
+            return $this->redirectToRoute('post_index');
+        }
+    
+        return $this->render('post/edit.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+    
+    #[Security("is_granted('ROLE_USER') and post.getAuthor() == user")]     
+#[Route('/deleteposts', name: 'post_delete')]
+     public function delete(PostRepository $postRepo): Response
+     {
+         $posts = $postRepo->removePost();
+ 
+         return $this->redirectToRoute('post_list');
+
+
+ }
 
 
 }

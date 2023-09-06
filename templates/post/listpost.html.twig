@@ -12,7 +12,16 @@
         {% for post in posts %}
             <li>
         <h2>{{ post.title }}</h2>
-        <a href="{{ path('post_show', {'id': post.id}) }}" class="btn btn-primary">Voir détails du post</a>
+
+      
+            <p>  <img src="{{ asset('uploads/images/' ~ post.image) }}" alt="Image"> </p>
+        <h2>
+        {{ post.content|slice(0, 200) ~ (post.content|length > 200 ? '...' : '') }}
+                    {% if post.content|length > 200 %}
+                        <a href="{{ path('post_show', {'id': post.id}) }}" class="btn btn-primary">Lire la suite</a>
+                    {% endif %}  <h2>
+          <p>Créé le : {{ post.createdAt|date('Y-m-d H:i:s') }}</p> {# Use the date filter to format createdAt #}
+             
     </li>
                 
              {#   <p>Created at: {{ post.created_at|date('Y-m-d H:i:s') }}</p> #}

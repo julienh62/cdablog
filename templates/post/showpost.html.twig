@@ -6,12 +6,24 @@
 
 
     <div class="container">
-        <h1 class="blue-heading">{{ title }}</h1>
+        <h1 class="blue-heading">{{ post.title }}</h1>
         <div class="row">
             <div class="col-md-12">
-                <p>{{ title }}</p>
-                <p>{{ content }}</p>
-                <p>{{ created_at|date('Y-m-d H:i:s') }}</p>
+                <p>{{ post.title }}</p>
+                <p>{{ post.content }}</p>
+                <p>{{ post.createdAt|date('Y-m-d H:i:s') }}</p>
+              <p>  <img src="{{ asset('uploads/images/' ~ post.image) }}" alt="Image"> </p>
+          
+           {% if app.user.id == post.user.id %}
+      {#  {% if app.user.id  %} #}
+               <a href="{{ path('editpost', {'id': post.id}) }}">Modifier Post</a>
+
+         <a href="{{ path('post_delete', {'id': post.id}) }}">Supprimer Post</a>
+
+
+        
+        {% endif %}
+                <a href="{{ path('post_index') }}" class="btn btn-primary">Retour à la liste des Posts</a>
             </div>
         </div>
     </div>

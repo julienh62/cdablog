@@ -1,0 +1,20 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Make the container at least the height of the viewport */
+  justify-content: space-between; /* Push content to the top and footer to the bottom */
+  align-items: stretch; /* Stretch container to fill the available space */
+}
+.myfooter {
+  background-color: #f8f9fa;
+  color: #393939;
+  padding: 10px;
+  text-align: center; /* Center the content horizontally */
+  margin-top: auto; /* Push the footer to the bottom of the container */
+}

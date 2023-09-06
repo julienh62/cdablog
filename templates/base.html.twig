@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
           <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+          <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
         {% block stylesheets %}
         {% endblock %}
 
@@ -29,13 +30,18 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('create_tag') }}">Ajouter tag</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('createpost') }}">Ajouter post</a>
+                     <li class="nav-item">
+                        <a class="nav-link" href="{{ path('tag') }}">Les Tags</a>
                     </li>
                        <li class="nav-item">
-                        <a class="nav-link" href="{{ path('post_index') }}">Les Posts</a>
+                        <a class="nav-link" href="{{ path('user_index') }}">Les Users</a>
                     </li>
-                    
+                      <li class="nav-item">
+                        <a class="nav-link" href="{{ path('post_index') }}">Les Post</a>
+                    </li>
+                   <li class="nav-item">
+                        <a class="nav-link" href="{{ path('createpost') }}">Ajouter post</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_register') }}">inscription</a>
                     </li>
@@ -50,16 +56,30 @@
             </div>
         </nav>
     </header>
+
+          {% block welcome_message %}
+               {% if user is defined and user is not null %}
+        <h1>Bienvenue {{ user.name }} !</h1>
+               {% else %}
+              <h1>Bienvenue, visiteur !</h1>
+              <p><a href="{{ path('app_register') }}">Inscrivez-vous</a> pour profiter de toutes les fonctionnalités.</p>
+              {% endif %}
+        {% endblock %}
+
+
         {% block body %}
         
          <div class="container">
+
+      
+
         </div>
         
         
         {% endblock %}
        
-        <footer>
-        <!-- Votre contenu de pied de page ici -->
+        <footer class="myfooter">
+      
         
             <p>&copy; 2023 Mon Site. Tous droits réservés.</p>
         

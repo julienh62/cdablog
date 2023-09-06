@@ -21,6 +21,7 @@ class Tag
     #[ORM\ManyToMany(targetEntity: Post::class, mappedBy: 'postTag')]
     private Collection $posts;
 
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
@@ -74,4 +75,6 @@ class Tag
 
         return $this;
     }
+
+
 }
