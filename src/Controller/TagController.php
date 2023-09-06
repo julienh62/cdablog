@@ -27,14 +27,18 @@ class TagController extends AbstractController
         ]);
     }
 
-    #[Route('/tag/{tagid}', name: 'all_tag_show')]
-    public function show(Tag $tag): Response
+
+
+    #[Route('/tag/{name}', name: 'all_tag_show')]
+    public function showTag(Tag $tag): Response
     {
-       
-        return $this->render('tag/showposttag.html.twig', [
-           'tag'=> $tag
-            
-        ]);
+        // Récupérez tous les posts associés à ce tag
+    $posts = $tag->getPosts();
+
+    return $this->render('tag/showposttag.html.twig', [
+        'tag' => $tag,
+        'posts' => $posts,
+    ]);
     }
 
     #[IsGranted("ROLE_USER")]

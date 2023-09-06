@@ -5,11 +5,16 @@
 {% block body %}
 <h1>Les tags </h1>
   <div class="container">
-       {% for tag in tags %}
-       <h2> {{ tag.name }} </h2>
-   {# <a href="{{ path('all_tag_show', {'id': tagid}) }}">Supprimer Post</a> #}
-       {% endfor %}
      
+    <ul>
+        {% for tag in tags %}
+            <li>
+               <h2> {{ tag.name }} </h2>
+                <a href="{{ path('all_tag_show', {'name': tag.name}) }}">{{ tag.name }}</a>
+            </li>
+            <h2> {{ tag.name }} </h2>
+         {% endfor %}
+    </ul>
     </div>
 
 {% endblock %}

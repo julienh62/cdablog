@@ -1,17 +1,19 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Hello TagController!{% endblock %}
-
+{% block title %}Hello Alltagshow!{% endblock %}
 {% block body %}
-<h1>Les tags </h1>
-  <div class="container">
-       {% for tag in tags %}
-       <h2> {{ tag.name }} </h2>
-   
-       {% endfor %}
-     
-    </div>
-
+    <h1>Tags</h1>
+    <ul>
+       <h1>Posts with tag "{{ tag.name }}"</h1>
+    <ul>
+        {% for post in posts %}
+            <li>{{ post.title }}</li>
+            <li>{{ post.title }}</li>
+                <li>{{ post.content }}</li>
+                <li>{{ post.createdAt|date('Y-m-d H:i:s') }}</li>
+              <li>  <img src="{{ asset('uploads/images/' ~ post.image) }}" alt="Image"> </li>
+            
+        {% endfor %}
+    </ul>
+    </ul>
 {% endblock %}
-
 
