@@ -30,7 +30,37 @@ class PostRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-   
+   /*
+    public function search(string $value)
+        {
+            // correspond au SELECT * From Post as p
+            $query = $this->createQueryBuilder('p')
+                ->andWhere('p.title LIKE :val')
+                //  % est un caractère joker qui remplace tous les autres caractères en sql
+                ->setParameter('val', "%".$value."%")
+                ->orderBy('p.id', 'ASC')
+                ->getQuery();
+                
+
+            return $query->getResult();
+        }
+        */
+       
+        public function search(string $value)
+        {
+            //SELECT * FROM POST as p
+           $query = $this->createQueryBuilder('p')
+                ->join("p.user", "u")
+                ->andWhere("p.title LIKE :val")
+                ->orWhere("p.content LIKE :val")
+                ->orWhere("u.name LIKE :val")
+                ->setParameter('val', "%".$value."%")
+                ->orderBy('p.id', 'ASC')
+                ->getQuery();
+    
+           return $query->getResult();
+        }
+       
 
 
 

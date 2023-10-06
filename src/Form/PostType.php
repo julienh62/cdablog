@@ -21,8 +21,9 @@ class PostType extends AbstractType
            
             ->add('isArchived')
          
-        
-            ->add('image', FileType::class, [
+            ->add('image')
+         
+            /*->add('image', FileType::class, [
                 'label' => 'Image',
 
                 // unmapped means that this field is not associated to any entity property
@@ -44,7 +45,7 @@ class PostType extends AbstractType
                         'mimeTypesMessage' => 'Please upload a valid  document',
                     ])
                 ],
-            ])
+            ])/*/
             
             ->add('postTag')
          

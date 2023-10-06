@@ -36,8 +36,9 @@ class Post
     #[ORM\Column(length: 255)]
     private ?string $image = null;
 
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'postUser')]
-    private Collection $users;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "posts")]
+    #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id")]
+    private $user;
 
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: Comment::class)]
     private Collection $postComment;
@@ -45,12 +46,10 @@ class Post
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'posts')]
     private Collection $postTag;
 
-    #[ORM\ManyToOne(inversedBy: 'userPost')]
-    private ?User $user = null;
 
     public function __construct()
     {
-        $this->users = new ArrayCollection();
+       
         $this->postComment = new ArrayCollection();
         $this->postTag = new ArrayCollection();
     }
@@ -135,32 +134,8 @@ class Post
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUsers(): Collection
-    {
-        return $this->users;
-    }
+   
 
-    public function addUser(User $user): static
-    {
-        if (!$this->users->contains($user)) {
-            $this->users->add($user);
-            $user->addPostUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): static
-    {
-        if ($this->users->removeElement($user)) {
-            $user->removePostUser($this);
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Comment>

@@ -5,7 +5,13 @@
 
 {% block body %}
 
- 
+    {% if user is defined and user is not null %}
+        <h1>Bienvenue {{ user.name }} !</h1>
+               {% else %}
+              <h1>Bienvenue, visiteur !</h1>
+              <p><a href="{{ path('app_register') }}">Inscrivez-vous</a> pour profiter de toutes les fonctionnalités.</p>
+              {% endif %}
+
 	<h1 class="text-primary">Hello blog -cda</h1>
 
 	<div class="container">

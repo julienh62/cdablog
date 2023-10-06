@@ -55,12 +55,13 @@ class PostController extends AbstractController
                 $post->setUpdateAt(new \DateTime());
                 
 
+
                  /** @var UploadedFile $imageFile */
-                  $imageFile = $form->get('image')->getData();
+                //  $imageFile = $form->get('image')->getData();
 
                    // this condition is needed because the 'image' field is not required
                    // so the PDF file must be processed only when a file is uploaded
-                   if ($imageFile) {
+               /*    if ($imageFile) {
                       $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                   // this is needed to safely include the file name as part of the URL
                     $safeFilename = $slugger->slug($originalFilename);
@@ -78,11 +79,12 @@ class PostController extends AbstractController
 
                 // updates the 'imageFilename' property to store the PDF file name
                 // instead of its contents
-                $post->setImage($newFilename);
-            }
+                $post->setImage($newFilename);*/
 
+               
+          //  }
 
-
+        
 
              // Enregistrez les modifications dans la base de données
                 $em->persist($post);
@@ -98,7 +100,7 @@ class PostController extends AbstractController
        ]);
 
      }
-
+/*
      #[Route('/posts', name: 'post_index')]
      public function index(PostRepository $postRepo): Response
      {
@@ -109,7 +111,31 @@ class PostController extends AbstractController
              'posts' => $posts
          ]);
      }
-     
+     */
+      
+    #[Route('/posts', name: 'post_index')]
+    public function firstFivePosts(PostRepository $postRepository)
+    {
+        // Récupérez les 5 premiers posts
+        $posts = $postRepository->findBy([], [], 5);
+
+        // Retournez les données au format JSON
+        return $this->render('post/listpost.html.twig', [
+            'posts' => $posts
+        ]);
+    }
+
+    #[Route('/api/{offset}', name: 'apipost')]
+    public function api(Request $request, PostRepository $postRepository, $offset=0)
+    {
+        // Récupérez les 5 premiers posts
+        $posts = $postRepository->findBy([], [], 5, $offset);
+
+        return $this->render('post/post-partial.html.twig', [
+            'posts' => $posts
+        ]);
+    }
+
 
 
     #[Route('/post/{id}', name: 'post_show')]
@@ -122,8 +148,9 @@ class PostController extends AbstractController
         ]);
     }
 
-    #[Security("is_granted('ROLE_USER') and post.getAuthor() == user")]
-    #[Route('/editpost/{id}', name: 'editpost')]
+    //#[Security("is_granted('ROLE_USER') and post.getAuthor() == user")]
+    #[IsGranted("post-edit", "post")] 
+    #[Route('/edit/{id}', name: 'post-edit')]
     public function update(Request $request, EntityManagerInterface $em, SluggerInterface $slugger, Post $post): Response
     {
         // Check if the user has permission to edit this post
@@ -137,11 +164,11 @@ class PostController extends AbstractController
             $post->setUpdateAt(new \DateTime());
 
             /** @var UploadedFile $imageFile */
-            $imageFile = $form->get('image')->getData();
+         //   $imageFile = $form->get('image')->getData();
 
             // this condition is needed because the 'image' field is not required
             // so the PDF file must be processed only when a file is uploaded
-            if ($imageFile) {
+         /*   if ($imageFile) {
                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
            // this is needed to safely include the file name as part of the URL
              $safeFilename = $slugger->slug($originalFilename);
@@ -160,7 +187,7 @@ class PostController extends AbstractController
          // updates the 'imageFilename' property to store the PDF file name
          // instead of its contents
          $post->setImage($newFilename);
-     }
+     }*/
     
             // Persist and flush the changes
             //$em->persist($post);
@@ -174,13 +201,16 @@ class PostController extends AbstractController
         ]);
     }
     
-    #[Security("is_granted('ROLE_USER') and post.getAuthor() == user")]     
-#[Route('/deleteposts', name: 'post_delete')]
-     public function delete(PostRepository $postRepo): Response
+      //  #[Security("is_granted('ROLE_USER') and post.getAuthor() == user")] 
+     #[IsGranted("post-remove", "post")]     
+     #[Route('/remove/{id}', name: 'post-remove')]
+     public function delete( Post $post, Request $request, EntityManagerInterface $em): Response
      {
-         $posts = $postRepo->removePost();
+        //dd($post);
+         $em->remove($post);
+         $em->flush();
  
-         return $this->redirectToRoute('post_list');
+         return $this->redirectToRoute('post_index');
 
 
  }

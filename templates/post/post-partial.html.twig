@@ -1,17 +1,4 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Hello ListPostController!{% endblock %}
-
-{% block body %}
-
-
-    <div class="container">
-     <h1>List of Posts</h1>
-   
-
-
-    <ul>
-        {% for post in posts %}
+{% for post in posts %}
             <li>
         <h2>{{ post.title }}</h2>
 
@@ -29,23 +16,7 @@
              
     </li>
                
-
              {#   <p>Created at: {{ post.created_at|date('Y-m-d H:i:s') }}</p> #}
                 <!-- Ajoutez d'autres informations de l'article si nécessaire -->
            
         {% endfor %}
-    </ul>
-    </div>
-     <div id="posts"></div>
-
-{% endblock %}
-
-
-  {% block javascripts %}
-    {{ parent() }}
-    <script src="/assets/js/apipost.js" defer></script>
-{% endblock %}
-
-
-
-

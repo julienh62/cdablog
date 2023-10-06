@@ -12,7 +12,7 @@
         {% for user in users %}
             <li>
         <h2>{{ user.name}}</h2>
-         <h2><img src="{{ asset('uploads/avatars/' ~ user.avatar) }}" alt="Image Avatar"></h2>
+        <img src="{{ user.avatar }}" alt="Avatar de {{ user.name }}" />
        {# <a href="{{ path('user_show', {'id': user.id}) }}" class="btn btn-primary">Voir détails du user</a> #}
     </li>
        {% endfor %}

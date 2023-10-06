@@ -7,13 +7,11 @@
     <ul>
         {% for post in posts %}
             <li>{{ post.title }}</li>
-            <li>{{ post.title }}</li>
                 <li>{{ post.content }}</li>
                 <li>{{ post.createdAt|date('Y-m-d H:i:s') }}</li>
-              <li>  <img src="{{ asset('uploads/images/' ~ post.image) }}" alt="Image"> </li>
-            
+                <li> <img src="{{ post.image }}" alt="image de {{ post.image }}"/>  </li>
+             
         {% endfor %}
     </ul>
     </ul>
 {% endblock %}
-

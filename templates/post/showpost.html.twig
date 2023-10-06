@@ -12,13 +12,16 @@
                 <p>{{ post.title }}</p>
                 <p>{{ post.content }}</p>
                 <p>{{ post.createdAt|date('Y-m-d H:i:s') }}</p>
-              <p>  <img src="{{ asset('uploads/images/' ~ post.image) }}" alt="Image"> </p>
-          
-           {% if app.user.id == post.user.id %}
-      {#  {% if app.user.id  %} #}
-               <a href="{{ path('editpost', {'id': post.id}) }}">Modifier Post</a>
+                <p>   <img src="{{ post.image }}" alt="image de {{ post.image }}"/>  </p>
 
-         <a href="{{ path('post_delete', {'id': post.id}) }}">Supprimer Post</a>
+
+        {% if app.user is null or not app.user  %}
+
+           {% elseif app.user.id == post.user.id or is_granted('ROLE_ADMIN') %}
+      {#  {% if app.user.id   %} #}
+               <a href="{{ path('post-edit', {'id': post.id}) }}">Modifier Post</a>
+
+         <a href="{{ path('post-remove', {'id': post.id}) }}">Supprimer Post</a>
 
 
         
